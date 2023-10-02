@@ -1,37 +1,30 @@
 import os
 import requests
 
-SUBSCRIPTIONS_URL = 'https://dracs.es/wp-json/wc/v1/subscriptions'
-ORDERS_URL = 'https://dracs.es/wp-json/wc/v3/orders'
-NAT_2DIAS_PRODUCT_ID = "2481"
-NAT_1DIAS_PRODUCT_ID = "3324"
+from woocommerce import WoocommerceAPI
+from serializer import WoocommerceAPISerializer
 
-def get_orders():
-    authentication_params = {
-        'consumer_key': os.environ.get("DRACS_API_CLIENT"),
-        'consumer_secret': os.environ.get("DRACS_API_SECRET")
-    }
-    r = requests.get(
-        SUBSCRIPTIONS_URL,
-        auth=(os.environ.get("DRACS_API_CLIENT"), os.environ.get("DRACS_API_SECRET")),
-        params={"search": "natacion", "per_page": "100"}
+
+def get_subscriptions():
+    api = WoocommerceAPI(
+        base_url='https://dracs.es',
+        api_client=os.environ.get('DRACS_API_CLIENT'),
+        api_secret=os.environ.get('DRACS_API_SECRET'),
     )
-    return r.json()
+    return api.get_swimming_subscriptions()
+
 
 def print_subscriptions(subscriptions):
+    serializer = WoocommerceAPISerializer()
     for sub in subscriptions:
-        print("{first_name} {last_name} - {product} - {status} - {next_payment}".format(
-            first_name=sub['billing']['first_name'],
-            last_name=sub['billing']['last_name'],
-            product=sub['line_items'][0]['name'],
-            status=sub['status'],
-            next_payment=sub['next_payment_date']
-        ))
+        print(serializer.serialize_subscription(sub))
+
 
 def main():
-    orders = get_orders()
-    print(len(orders))
-    print_subscriptions(orders)
+    swimming_subs = get_subscriptions()
+    print(len(swimming_subs))
+    print_subscriptions(swimming_subs)
+
 
 if __name__ == "__main__":
     main()
