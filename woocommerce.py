@@ -8,6 +8,16 @@ class WoocommerceAPI():
     NAT_2DIAS_PRODUCT_ID = "2481"
     NAT_1DIAS_PRODUCT_ID = "3324"
 
+    STATUSES = {
+        'all': 'any',
+        'pending': 'pending',
+        'paused': 'on-hold',
+        'active': 'active',
+        'cancelled': 'cancelled',
+        'pending-cancel': 'pending-cancel',
+        'expired': 'expired'
+    }
+
 
     def __init__(self, base_url, api_client, api_secret) -> None:
         self.base_url = base_url
@@ -20,11 +30,12 @@ class WoocommerceAPI():
             params=params,
         )
 
-    def get_swimming_subscriptions(self):
+    def get_swimming_subscriptions(self, status='all'):
         r = self._get_request(
             path=self.SUBSCRIPTIONS_PATH,
             params={
                 "search": "natacion",
+                "status": self.STATUSES[status],
                 "per_page": "100"
             }
         )

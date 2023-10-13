@@ -1,5 +1,4 @@
 import os
-import requests
 
 from woocommerce import WoocommerceAPI
 from serializer import WoocommerceAPISerializer
@@ -11,7 +10,7 @@ def get_subscriptions():
         api_client=os.environ.get('DRACS_API_CLIENT'),
         api_secret=os.environ.get('DRACS_API_SECRET'),
     )
-    return api.get_swimming_subscriptions()
+    return api.get_swimming_subscriptions(status="active")
 
 
 def print_subscriptions(subscriptions):
