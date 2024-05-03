@@ -1,7 +1,7 @@
 .phony: run test
 
 test:
-	@pytest tests
+	@PYTHONPATH=$$(pwd) pytest tests
 
 run:
 	@python main.py
